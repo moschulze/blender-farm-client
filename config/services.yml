@@ -1,8 +1,8 @@
 parameters:
-  api_url: 'http://localhost/blender-farm/web/api/'
+  api_url: 'http://localhost/'
   file_path: %base_path%/files/
   log_file_path: %base_path%/client.log
-  path_to_blender: '/home/moritz/Software/blender/blender'
+  path_to_blender: 'blender'
   image_formats:
     PNG: png
     JPEG: jpg
