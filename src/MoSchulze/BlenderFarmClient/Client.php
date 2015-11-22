@@ -18,6 +18,11 @@ class Client
      */
     private $logger;
 
+    /**
+     * @var Blender
+     */
+    private $blender;
+
     public function run()
     {
         $task = $this->requestTask();
@@ -32,10 +37,10 @@ class Client
             }
 
             $this->logger->addInfo('rendering');
-            //ToDo render
+            $imagePath = $this->blender->renderFrame($task);
 
             $this->logger->addInfo('uploading image');
-            //ToDo upload rendered image
+            $this->uploadImage($task, $imagePath);
 
             $task = $this->requestTask();
         }
@@ -57,6 +62,7 @@ class Client
         $task->frameNumber = $data['frame'];
         $task->projectId = $data['project'];
         $task->projectMd5 = $data['md5'];
+        $task->id = $data['id'];
 
         return $task;
     }
@@ -68,6 +74,20 @@ class Client
         $filePath = '/tmp/'.md5(rand().microtime());
         file_put_contents($filePath, $response->getBody());
         return $filePath;
+    }
+
+    private function uploadImage(Task $task, $imagePath)
+    {
+        $client = new \GuzzleHttp\Client();
+        $body = fopen($imagePath, 'r');
+        $client->post($this->apiUrl . 'upload/' . $task->id, array(
+            'multipart' => array(
+                array(
+                    'name' => 'file',
+                    'contents' => $body
+                )
+            )
+        ));
     }
 
     /**
@@ -92,5 +112,13 @@ class Client
     public function setLogger($logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param Blender $blender
+     */
+    public function setBlender($blender)
+    {
+        $this->blender = $blender;
     }
 }

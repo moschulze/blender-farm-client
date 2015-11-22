@@ -2,6 +2,7 @@ parameters:
   api_url: 'http://localhost/blender-farm/web/api/'
   file_path: %base_path%/files/
   log_file_path: %base_path%/client.log
+  path_to_blender: '/home/moritz/Software/blender/blender'
 
 services:
   console:
@@ -21,11 +22,18 @@ services:
       - [ setApiUrl, [%api_url%] ]
       - [ setFileRepository, [@file_repository] ]
       - [ setLogger, [@logger] ]
+      - [ setBlender, [@blender] ]
 
   file_repository:
     class: MoSchulze\BlenderFarmClient\FileRepository
     calls:
       - [ setFileBasePath, [%file_path%] ]
+
+  blender:
+    class: MoSchulze\BlenderFarmClient\Blender
+    calls:
+      - [ setPathToBlender, [%path_to_blender%] ]
+      - [ setFileRepository, [@file_repository] ]
 
   logger:
     class: Monolog\Logger

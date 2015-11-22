@@ -8,7 +8,7 @@ class FileRepository
 
     public function hasFreshestProjectFile($projectId, $md5)
     {
-        $filePath = $this->fileBasePath . $projectId . '/project.blend';
+        $filePath = $this->getProjectDirectory($projectId) . '/project.blend';
         if(!file_exists($filePath)) {
             return false;
         }
@@ -20,14 +20,19 @@ class FileRepository
         return true;
     }
 
+    public function getProjectDirectory($projectId)
+    {
+        return $this->fileBasePath . $projectId . '/';
+    }
+
     public function getProjectFilePath($projectId)
     {
-        return $this->fileBasePath . $projectId . '/project.blend';
+        return $this->getProjectDirectory($projectId) . 'project.blend';
     }
 
     public function putProjectFile($projectId, $tmpFilePath)
     {
-        $folderPath = $this->fileBasePath . $projectId;
+        $folderPath = $this->getProjectDirectory($projectId);
         $filePath = $folderPath . '/project.blend';
         if(!file_exists($folderPath)) {
             mkdir($folderPath);
