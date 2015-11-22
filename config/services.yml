@@ -1,0 +1,9 @@
+services:
+  console:
+    class: Symfony\Component\Console\Application
+    calls:
+      - [ add, [@run_command] ]
+      - [ setDefaultCommand, ['run']]
+
+  run_command:
+    class: MoSchulze\BlenderFarmClient\Command\RunCommand
