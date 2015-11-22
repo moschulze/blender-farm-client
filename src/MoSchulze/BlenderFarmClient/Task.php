@@ -9,4 +9,5 @@ class Task
     public $projectMd5;
     public $frameNumber;
     public $format;
+    public $engine;
 }

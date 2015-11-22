@@ -22,7 +22,7 @@ class Blender
 
         $command  = $this->pathToBlender . ' -b ';
         $command .= $this->fileRepository->getProjectFilePath($task->projectId);
-        $command .= ' -E CYCLES';
+        $command .= ' -E ' . $task->engine;
         $command .= ' -F ' . $task->format;
         $command .= ' -o ' . $outputFilePattern;
         $command .= ' -f ' . $task->frameNumber;

@@ -64,6 +64,7 @@ class Client
         $task->projectMd5 = $data['md5'];
         $task->id = $data['id'];
         $task->format = $data['format'];
+        $task->engine = $data['engine'];
 
         return $task;
     }
