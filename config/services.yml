@@ -1,9 +1,38 @@
+parameters:
+  api_url: 'http://localhost/blender-farm/web/api/'
+  file_path: %base_path%/files/
+  log_file_path: %base_path%/client.log
+
 services:
   console:
     class: Symfony\Component\Console\Application
     calls:
       - [ add, [@run_command] ]
-      - [ setDefaultCommand, ['run']]
+      - [ setDefaultCommand, ['run'] ]
 
   run_command:
     class: MoSchulze\BlenderFarmClient\Command\RunCommand
+    calls:
+      - [ setClient, [@client] ]
+
+  client:
+    class: MoSchulze\BlenderFarmClient\Client
+    calls:
+      - [ setApiUrl, [%api_url%] ]
+      - [ setFileRepository, [@file_repository] ]
+      - [ setLogger, [@logger] ]
+
+  file_repository:
+    class: MoSchulze\BlenderFarmClient\FileRepository
+    calls:
+      - [ setFileBasePath, [%file_path%] ]
+
+  logger:
+    class: Monolog\Logger
+    arguments: ['BlenderFarmClient']
+    calls:
+      - [ pushHandler, [@log_handler] ]
+
+  log_handler:
+    class: Monolog\Handler\RotatingFileHandler
+    arguments: [ %log_file_path%, 7 ]

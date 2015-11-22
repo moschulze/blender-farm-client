@@ -7,6 +7,7 @@ use \Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use \Symfony\Component\Config\FileLocator;
 
 $container = new ContainerBuilder();
+$container->setParameter('base_path', realpath(__DIR__ . '/../'));
 $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../config'));
 $loader->load('services.yml');
 
