@@ -3,6 +3,9 @@ parameters:
   file_path: %base_path%/files/
   log_file_path: %base_path%/client.log
   path_to_blender: '/home/moritz/Software/blender/blender'
+  image_formats:
+    PNG: png
+    JPEG: jpg
 
 services:
   console:
@@ -34,6 +37,7 @@ services:
     calls:
       - [ setPathToBlender, [%path_to_blender%] ]
       - [ setFileRepository, [@file_repository] ]
+      - [ setImageFormats, [%image_formats%] ]
 
   logger:
     class: Monolog\Logger

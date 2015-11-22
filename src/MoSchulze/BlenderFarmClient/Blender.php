@@ -8,6 +8,8 @@ class Blender
 
     private $frameNumberLength = 5;
 
+    private $imageFormats = array();
+
     /**
      * @var FileRepository
      */
@@ -26,7 +28,8 @@ class Blender
         $command .= ' -f ' . $task->frameNumber;
         exec($command);
 
-        $imagePath = $projectDirectory . sprintf("frame_%'.0" . $this->frameNumberLength . "d", $task->frameNumber) . '.' . strtolower($task->format);
+        $fileExtension = $this->imageFormats[$task->format];
+        $imagePath = $projectDirectory . sprintf("frame_%'.0" . $this->frameNumberLength . "d", $task->frameNumber) . '.' . $fileExtension;
 
         return $imagePath;
     }
@@ -45,5 +48,13 @@ class Blender
     public function setFileRepository($fileRepository)
     {
         $this->fileRepository = $fileRepository;
+    }
+
+    /**
+     * @param array $imageFormats
+     */
+    public function setImageFormats($imageFormats)
+    {
+        $this->imageFormats = $imageFormats;
     }
 }
