@@ -63,6 +63,7 @@ class Client
         $task->projectId = $data['project'];
         $task->projectMd5 = $data['md5'];
         $task->id = $data['id'];
+        $task->format = $data['format'];
 
         return $task;
     }

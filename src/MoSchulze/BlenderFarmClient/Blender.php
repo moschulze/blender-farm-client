@@ -6,6 +6,8 @@ class Blender
 {
     private $pathToBlender = 'blender';
 
+    private $frameNumberLength = 5;
+
     /**
      * @var FileRepository
      */
@@ -13,18 +15,20 @@ class Blender
 
     public function renderFrame(Task $task)
     {
+        $projectDirectory = $this->fileRepository->getProjectDirectory($task->projectId);
+        $outputFilePattern = $projectDirectory . 'frame_' . str_repeat('#', $this->frameNumberLength);
 
         $command  = $this->pathToBlender . ' -b ';
         $command .= $this->fileRepository->getProjectFilePath($task->projectId);
         $command .= ' -E CYCLES';
-        $command .= ' -F PNG';
-        $command .= ' -o ' . $this->fileRepository->getProjectDirectory($task->projectId) . 'frame#####';
+        $command .= ' -F ' . $task->format;
+        $command .= ' -o ' . $outputFilePattern;
         $command .= ' -f ' . $task->frameNumber;
         exec($command);
 
-        $imagePath = $this->fileRepository->getProjectDirectory($task->projectId) . sprintf("frame%'.05d", $task->frameNumber);
+        $imagePath = $projectDirectory . sprintf("frame_%'.0" . $this->frameNumberLength . "d", $task->frameNumber) . '.' . strtolower($task->format);
 
-        return $imagePath . '.png';
+        return $imagePath;
     }
 
     /**

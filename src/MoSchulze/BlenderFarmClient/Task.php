@@ -8,4 +8,5 @@ class Task
     public $projectId;
     public $projectMd5;
     public $frameNumber;
+    public $format;
 }
