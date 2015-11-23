@@ -36,6 +36,16 @@ parameters:
   path_to_blender: /path/blender
 ```
 
+###Downloading external packages
+In a terminal navigate to the root folder of the installation. Here you need to run the following two commands to download the required external packages:
+
+```sh
+curl -sS https://getcomposer.org/installer | php
+./composer.phar install
+```
+
+This might take a short time.
+
 ###Done
 Congratulation, you successfully have installed the BlenderFarm client!
 
