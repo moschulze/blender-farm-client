@@ -51,3 +51,4 @@ It will request rendering tasks from the server. When the server does't have mor
 ##ToDo
 - Run forever
 - Test of the setup
+- Installer
