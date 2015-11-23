@@ -1,0 +1,6 @@
+parameters:
+  api_url: http://localhost/api/                #URL to the manage server api
+  path_to_blender: blender                      #path to the blender executable
+
+  file_path: %base_path%/files/                 #directory where the project files and generated images will be stored
+  log_file_path: %base_path%/log/client.log     #directory where the log files will be stored
