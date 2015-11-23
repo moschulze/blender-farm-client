@@ -56,7 +56,7 @@ To run the client simply execute the following command:
 bin/client
 ```
 
-It will request rendering tasks from the server. When the server does't have mor work top do, the client will end itself.
+It will request rendering tasks from the server. When the server does't has more work to do, the client will exit.
 
 ##ToDo
 - Run forever
