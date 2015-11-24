@@ -8,7 +8,14 @@ class Blender
 
     private $frameNumberLength = 5;
 
+    private $secondsBetweenReports = 5;
+
     private $imageFormats = array();
+
+    /**
+     * @var Api
+     */
+    private $api;
 
     /**
      * @var FileRepository
@@ -26,12 +33,49 @@ class Blender
         $command .= ' -F ' . $task->format;
         $command .= ' -o ' . $outputFilePattern;
         $command .= ' -f ' . $task->frameNumber;
-        exec($command);
+
+        $report = new Report();
+        $report->task = $task;
+
+        $output = popen($command, 'r');
+        $lastReport = time();
+        while(!feof($output)) {
+            $line = fgets($output);
+
+            $matches = array();
+            preg_match(
+                '~.* Time:(\d{2}:\d{2}.\d{2}) \| Remaining:(\d{2}:\d{2}.\d{2}).*Path Tracing Tile (\d+)\/(\d+)~',
+                $line,
+                $matches
+            );
+            if(empty($matches)) {
+                continue;
+            }
+
+            $report->progress = $matches[3] / $matches[4];
+
+            $exploded = explode(':', $matches[1]);
+            $report->runtime = $exploded[0]*60 + $exploded[1];
+
+            $exploded = explode(':', $matches[2]);
+            $report->remaining = $exploded[0]*60 + $exploded[1];
+
+            if(time() - $lastReport >= $this->secondsBetweenReports) {
+                $this->api->sendReport($report);
+                $lastReport = time();
+            }
+
+        }
 
         $fileExtension = $this->imageFormats[$task->format];
         $imagePath = $projectDirectory . sprintf("frame_%'.0" . $this->frameNumberLength . "d", $task->frameNumber) . '.' . $fileExtension;
 
-        return $imagePath;
+        $renderingResult = new RenderingResult();
+        $renderingResult->imagePath = $imagePath;
+        $renderingResult->runtime = $report->runtime;
+        $renderingResult->task = $task;
+
+        return $renderingResult;
     }
 
     /**
@@ -56,5 +100,13 @@ class Blender
     public function setImageFormats($imageFormats)
     {
         $this->imageFormats = $imageFormats;
+    }
+
+    /**
+     * @param Api $api
+     */
+    public function setApi($api)
+    {
+        $this->api = $api;
     }
 }

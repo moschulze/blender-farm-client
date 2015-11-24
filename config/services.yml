@@ -18,10 +18,14 @@ services:
     calls:
       - [ setClient, [@client] ]
 
+  api:
+    class: MoSchulze\BlenderFarmClient\Api
+    arguments: [%api_url%]
+
   client:
     class: MoSchulze\BlenderFarmClient\Client
     calls:
-      - [ setApiUrl, [%api_url%] ]
+      - [ setApi, [@api] ]
       - [ setFileRepository, [@file_repository] ]
       - [ setLogger, [@logger] ]
       - [ setBlender, [@blender] ]
@@ -37,6 +41,7 @@ services:
       - [ setPathToBlender, [%path_to_blender%] ]
       - [ setFileRepository, [@file_repository] ]
       - [ setImageFormats, [%image_formats%] ]
+      - [ setApi, [@api] ]
 
   logger:
     class: Monolog\Logger
