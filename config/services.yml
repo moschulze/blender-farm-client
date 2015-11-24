@@ -47,3 +47,9 @@ services:
   log_handler:
     class: Monolog\Handler\RotatingFileHandler
     arguments: [ %log_file_path%, 7 ]
+    calls:
+      - [ setFormatter, [@log_formatter] ]
+
+  log_formatter:
+    class: Monolog\Formatter\LineFormatter
+    arguments: [ "[%%datetime%%] %%level_name%%: %%message%%\n", 'Y-m-d H:i:s' ]
