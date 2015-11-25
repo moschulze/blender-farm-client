@@ -11,12 +11,21 @@ services:
     class: Symfony\Component\Console\Application
     calls:
       - [ add, [@run_command] ]
+      - [ add, [@test_command] ]
       - [ setDefaultCommand, ['run'] ]
 
   run_command:
     class: MoSchulze\BlenderFarmClient\Command\RunCommand
     calls:
       - [ setClient, [@client] ]
+
+  test_command:
+    class: MoSchulze\BlenderFarmClient\Command\TestCommand
+    calls:
+      - [ setApi, [@api] ]
+      - [ setBlender, [@blender] ]
+      - [ setFilePath, [%file_path%] ]
+      - [ setLogPath, [%log_file_path%] ]
 
   api:
     class: MoSchulze\BlenderFarmClient\Api

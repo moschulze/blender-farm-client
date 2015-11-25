@@ -49,6 +49,13 @@ This might take a short time.
 ###Done
 Congratulation, you successfully have installed the BlenderFarm client!
 
+##Testing the setup
+To test your configured setup you can simply run the following command:
+
+```sh
+bin/client test
+```
+
 ##Run
 To run the client simply execute the following command:
 
@@ -60,5 +67,4 @@ It will request rendering tasks from the server. When the server does't has more
 
 ##ToDo
 - Run forever
-- Test of the setup
 - Installer

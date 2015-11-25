@@ -78,6 +78,17 @@ class Blender
         return $renderingResult;
     }
 
+    public function testInstallation()
+    {
+        $blenderOutput = array();
+        exec($this->pathToBlender . ' --version 2>&1', $blenderOutput);
+        if(strpos($blenderOutput[0], 'Blender') === 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @param string $pathToBlender
      */

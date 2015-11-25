@@ -11,6 +11,19 @@ class Api
         $this->apiUrl = $apiUrl;
     }
 
+    public function requestStatus()
+    {
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $this->apiUrl . 'status');
+        $data = json_decode($response->getBody(), true);
+
+        if($data['status'] !== 'ok') {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @return Task|null
      */
