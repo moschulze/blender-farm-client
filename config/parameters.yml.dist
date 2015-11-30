@@ -1,6 +1,7 @@
 parameters:
   api_url: http://localhost/api/                #URL to the manage server api
   path_to_blender: blender                      #path to the blender executable
+  cycles_use_gpu: false                         #enables or disable gpu usage if supported
 
   file_path: %base_path%/files/                 #directory where the project files and generated images will be stored
   log_file_path: %base_path%/log/client.log     #path to the log file

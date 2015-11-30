@@ -51,6 +51,7 @@ services:
       - [ setFileRepository, [@file_repository] ]
       - [ setImageFormats, [%image_formats%] ]
       - [ setApi, [@api] ]
+      - [ renderOnGpu, [%cycles_use_gpu%] ]
 
   logger:
     class: Monolog\Logger

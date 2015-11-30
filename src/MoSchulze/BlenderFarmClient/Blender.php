@@ -12,6 +12,8 @@ class Blender
 
     private $imageFormats = array();
 
+    private $renderOnGpu = false;
+
     /**
      * @var Api
      */
@@ -32,6 +34,12 @@ class Blender
         $command .= ' -E ' . $task->engine;
         $command .= ' -F ' . $task->format;
         $command .= ' -o ' . $outputFilePattern;
+
+        if($task->engine == 'CYCLES' && $this->renderOnGpu) {
+            $command .= ' -t 0';
+            $command .= ' -P ' . __DIR__ . '/../../../bin/gpu_render.py';
+        }
+
         $command .= ' -f ' . $task->frameNumber;
 
         $report = new Report();
@@ -119,5 +127,10 @@ class Blender
     public function setApi($api)
     {
         $this->api = $api;
+    }
+
+    public function renderOnGpu($value = true)
+    {
+        $this->renderOnGpu = $value;
     }
 }
