@@ -45,6 +45,8 @@ class Client
             $this->logger->addInfo('uploading image');
             $this->api->uploadRenderingResult($renderingResult);
 
+            unlink($renderingResult->imagePath);
+
             $task = $this->api->requestTask();
         }
 
