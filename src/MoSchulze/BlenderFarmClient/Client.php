@@ -50,7 +50,8 @@ class Client
             $task = $this->api->requestTask();
         }
 
-        $this->logger->addInfo('Can\'t get more tasks. Exiting');
+        $this->fileRepository->deleteAllProjects();
+        $this->logger->addInfo('Can\'t get more tasks. Cleaned up and exit');
     }
 
     /**

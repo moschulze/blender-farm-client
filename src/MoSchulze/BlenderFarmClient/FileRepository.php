@@ -6,6 +6,27 @@ class FileRepository
 {
     private $fileBasePath = '';
 
+    public function deleteAllProjects()
+    {
+        foreach(glob($this->fileBasePath . '*') as $file) {
+            if(is_dir($file)) {
+                $this->deleteRecursive($file);
+            }
+        }
+    }
+
+    private function deleteRecursive($directory)
+    {
+        foreach(glob($directory . '/*') as $file) {
+            if(is_dir($file)) {
+                $this->deleteRecursive($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($directory);
+    }
+
     public function hasFreshestProjectFile($projectId, $md5)
     {
         $filePath = $this->getProjectDirectory($projectId) . '/project.blend';
