@@ -41,6 +41,7 @@ class Blender
         }
 
         $command .= ' -f ' . $task->frameNumber;
+        $command .= ' -noaudio';
 
         $report = new Report();
         $report->task = $task;
