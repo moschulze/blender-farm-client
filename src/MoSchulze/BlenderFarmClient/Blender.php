@@ -30,7 +30,7 @@ class Blender
         $outputFilePattern = $projectDirectory . 'frame_' . str_repeat('#', $this->frameNumberLength);
 
         $command  = $this->pathToBlender . ' -b ';
-        $command .= $this->fileRepository->getProjectFilePath($task->projectId);
+        $command .= $this->fileRepository->getProjectFilePath($task->projectMainFile, $task->projectId);
         $command .= ' -E ' . $task->engine;
         $command .= ' -F ' . $task->format;
         $command .= ' -o ' . $outputFilePattern;

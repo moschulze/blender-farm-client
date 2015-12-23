@@ -31,21 +31,23 @@ class Client
         $task = $this->api->requestTask();
 
         while(!is_null($task)) {
-            $this->logger->addInfo('project ' . $task->projectId . ', frame ' . $task->frameNumber);
+            $this->logger->addInfo('New task: project ' . $task->projectId . ', frame ' . $task->frameNumber);
+            $filesThatNeedUpdate = $this->fileRepository->getFilesThatNeedUpdate($task->projectFiles, $task->projectId);
 
-            if(!$this->fileRepository->hasFreshestProjectFile($task->projectId, $task->projectMd5)) {
-                $this->logger->addInfo('downloading file for project ' . $task->projectId);
-                $filePath = $this->api->requestProjectFileForTask($task);
-                $this->fileRepository->putProjectFile($task->projectId, $filePath);
+            foreach($filesThatNeedUpdate as $file) {
+                $this->logger->addInfo('Downloading file ' . $file['path']);
+                $tmpFilePath = $this->api->getFileForProject($file['path'], $task->projectId);
+                $this->fileRepository->addDownloadedFileToProject($tmpFilePath, $file['path'], $task->projectId);
             }
 
-            $this->logger->addInfo('rendering');
+            $this->logger->addInfo('Starting render process');
             $renderingResult = $this->blender->renderFrame($task);
 
-            $this->logger->addInfo('uploading image');
+            $this->logger->addInfo('Starting image upload');
             $this->api->uploadRenderingResult($renderingResult);
 
             unlink($renderingResult->imagePath);
+            $this->logger->addInfo('Task done');
 
             $task = $this->api->requestTask();
         }

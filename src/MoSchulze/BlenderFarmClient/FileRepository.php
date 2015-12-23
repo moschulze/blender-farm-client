@@ -6,6 +6,11 @@ class FileRepository
 {
     private $fileBasePath = '';
 
+    public function getProjectDirectory($projectId)
+    {
+        return $this->fileBasePath . $projectId . '/';
+    }
+
     public function deleteAllProjects()
     {
         foreach(glob($this->fileBasePath . '*') as $file) {
@@ -27,40 +32,34 @@ class FileRepository
         rmdir($directory);
     }
 
-    public function hasFreshestProjectFile($projectId, $md5)
+    public function getProjectFilePath($filePath, $projectId)
     {
-        $filePath = $this->getProjectDirectory($projectId) . '/project.blend';
-        if(!file_exists($filePath)) {
-            return false;
-        }
-
-        if(md5(file_get_contents($filePath)) !== $md5) {
-            return false;
-        }
-
-        return true;
+        return $this->getProjectDirectory($projectId) . $filePath;
     }
 
-    public function getProjectDirectory($projectId)
+    public function getFilesThatNeedUpdate($filesArray, $projectId)
     {
-        return $this->fileBasePath . $projectId . '/';
-    }
-
-    public function getProjectFilePath($projectId)
-    {
-        return $this->getProjectDirectory($projectId) . 'project.blend';
-    }
-
-    public function putProjectFile($projectId, $tmpFilePath)
-    {
-        $folderPath = $this->getProjectDirectory($projectId);
-        $filePath = $folderPath . '/project.blend';
-        if(!file_exists($folderPath)) {
-            mkdir($folderPath);
-        } elseif(file_exists($filePath)) {
-            unlink($filePath);
+        $result = array();
+        $projectDirectory = $this->getProjectDirectory($projectId);
+        foreach($filesArray as $file) {
+            $path = $projectDirectory . $file['path'];
+            if(!file_exists($path) || md5_file($path) != $file['md5']) {
+                $result[] = $file;
+            }
         }
-        rename($tmpFilePath, $filePath);
+        return $result;
+    }
+
+    public function addDownloadedFileToProject($tmpPath, $realFilePath, $projectId)
+    {
+        $projectDirectory = $this->getProjectDirectory($projectId);
+        $targetPath = $projectDirectory . $realFilePath;
+
+        if(!file_exists(dirname($targetPath))) {
+            mkdir(dirname($targetPath), 0777, true);
+        }
+
+        rename($tmpPath, $targetPath);
     }
 
     /**
@@ -68,6 +67,6 @@ class FileRepository
      */
     public function setFileBasePath($fileBasePath)
     {
-        $this->fileBasePath = $fileBasePath;
+        $this->fileBasePath = rtrim($fileBasePath, '/') . '/';
     }
 }

@@ -39,8 +39,9 @@ class Api
 
         $task = new Task();
         $task->frameNumber = $data['frame'];
-        $task->projectId = $data['project'];
-        $task->projectMd5 = $data['md5'];
+        $task->projectId = $data['project']['id'];
+        $task->projectFiles = $data['project']['files'];
+        $task->projectMainFile = $data['project']['mainFile'];
         $task->id = $data['id'];
         $task->format = $data['format'];
         $task->engine = $data['engine'];
@@ -48,17 +49,20 @@ class Api
         return $task;
     }
 
-    /**
-     * @param Task $task
-     * @return string path to tmp file
-     */
-    public function requestProjectFileForTask(Task $task)
+    public function getFileForProject($filePath, $projectId)
     {
         $client = new \GuzzleHttp\Client();
-        $response = $client->get($this->apiUrl . 'project/' . $task->projectId);
-        $filePath = '/tmp/'.md5(rand().microtime());
-        file_put_contents($filePath, $response->getBody());
-        return $filePath;
+        $downloadedFilePath = '/tmp/'.md5(rand().microtime());
+        $file = fopen($downloadedFilePath, 'w+');
+        $client->request(
+            'GET',
+            $this->apiUrl . 'file/' . $projectId . '/' . urlencode(base64_encode($filePath)),
+            array(
+                'sink' => $file
+            )
+        );
+
+        return $downloadedFilePath;
     }
 
     /**

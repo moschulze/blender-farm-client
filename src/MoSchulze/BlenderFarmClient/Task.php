@@ -6,7 +6,8 @@ class Task
 {
     public $id;
     public $projectId;
-    public $projectMd5;
+    public $projectFiles;
+    public $projectMainFile;
     public $frameNumber;
     public $format;
     public $engine;
